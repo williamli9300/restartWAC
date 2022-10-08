@@ -1,2 +1,17 @@
-# restartWAC
-Automatically restart WiredAutoConfig service upon login for Windows computers
+# Automatically Restart Wired AutoConfig Service Upon Login
+
+For some wired internet connections (i.e. Ethernet) connections requiring Protected EAP authentication (such as the UofT ResNet), proper authentication and therefore internet access may require a restart of the Wired AutoConfig service to connect. This script contains two parts: a powershell `*.ps1` script that restarts the Wired AutoConfig (aka `dot2svc`) service, as well as the ethernet adapter that is connected to the desired Ethernet connection; and a batch `*.bat` script to automatically run the powershell script. The next section will describe how to set up the script for your device, and allow it to automatically run upon login. If you do not wish for the script to run automatically, you may omit step 8.
+
+## Instructions
+1. Follow the authentication instructions provided by the service provider. For UofT, it can be found at https://www.daniels.utoronto.ca/wired-network-connectivity-windows
+2. Open a Windows Powershell prompt in Administrator mode. Enter the following snippet: ```Set-ExecutionPolicy unrestricted``` Then enter `Y` when prompted to remove restrictions on what scripts can run on Powershell.. 
+    - :exclamation: ***Important:* This step enables your computer to run unsigned powershell scripts. The default `ExecutionPolicy` is `restricted` to prevent malicious code from running on your device. Please use common sense and do not download and/or run scripts that you do not trust.**
+    - :exclamation: ***Important:* The batch script is designed to run the powershell script as an administrator. This is necessary in order to restart the Wired AutoConfig service and disable/re-enable your Ethernet adapter.** A UAC prompt (i.e. "allow this app to make changes to your device") will show up every time the script runs. If you configure the script to run at startup, you will be met by a UAC prompt every time you login.
+4. Download `restartWAC.bat` and `ps.ps1`, then move these files to a folder of your choice. `C:\Users\[user]\` or `C:\Users\[user]\Desktop` or `C:\Users\[user]\Desktop` are recommended.
+5. Press <kbd>⊞ Windows</kbd> + <kbd>R</kbd> to bring up the Run window, then enter `ncpa.cpl` to bring up the Network Control Panel Applet. Look for the Ethernet connection that is connected to the desired Ethernet network (normally named `Ethernet`, `Ethernet 2`, etc.)
+    - Note: If your Ethernet connection does not show up, Press <kbd>⊞ Windows</kbd> + <kbd>R</kbd> to bring up the Run window, then enter `devmgmt.msc` to open Device Manager. Then, under Network Adapters, look for your Ethernet adapter. If it is disabled, re-enable it. If is enabled, disable it then re-enable it. If it does not show up, try refreshing your device list. Regardless of which of these three situations you might have found yourself in, it is recommended to your device before your continue.
+6. Open `ps.ps1` with a text editor such as Notepad or Notepad++. Find and Replace all instances of `YourEthernetName` with the correct name that you identified in the last step. Save, then close.
+7. Open `restartWAC.bat` with a text editor such as Notepad or Notepad++. Find and replace `YourScriptPath` with the path of the folder containing `ps.ps1`. For example, if you put `ps.ps1` on your Desktop, the path would be `C:\Users\[user]\Desktop`.
+8. Right click, then create a shortcut of `restartWAC.bat`. Press <kbd>⊞ Windows</kbd> + <kbd>R</kbd> to bring up the Run window, then enter `shell:startup` to open your startup folder. Drag the newly created shortcut into the startup folder.
+10. Double click the shortcut in your startup folder to ensure that the script works.
+11. Congratulations! You have successfully installed the script.
